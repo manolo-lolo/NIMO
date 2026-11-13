@@ -7,14 +7,14 @@ from sklearn.preprocessing import StandardScaler
 
 diabetes = load_diabetes()
 X = pd.DataFrame(diabetes.data, columns=diabetes.feature_names)
-y = pd.Series(diabetes.target, name='target')
+y = pd.Series(diabetes.target, name="target")
 df = pd.concat([X, y], axis=1)
 
 
 for i in range(1, 10):
     print(f"Processing split {i}...")
-    if not os.path.exists(f'./data/diabetes_{i}'):
-        os.makedirs(f'./data/diabetes_{i}')
+    if not os.path.exists(f"./data/diabetes_{i}"):
+        os.makedirs(f"./data/diabetes_{i}")
 
     rand_seed = i
 
@@ -44,6 +44,6 @@ for i in range(1, 10):
     test_df["target"] = y_test
 
     # save the train_df, val_df, test_df to csv
-    train_df.to_csv(f'./data/diabetes_{rand_seed}/train.csv', index=False)
-    val_df.to_csv(f'./data/diabetes_{rand_seed}/val.csv', index=False)
-    test_df.to_csv(f'./data/diabetes_{rand_seed}/test.csv', index=False)
+    train_df.to_csv(f"./data/diabetes_{rand_seed}/train.csv", index=False)
+    val_df.to_csv(f"./data/diabetes_{rand_seed}/val.csv", index=False)
+    test_df.to_csv(f"./data/diabetes_{rand_seed}/test.csv", index=False)

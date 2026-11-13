@@ -20,6 +20,7 @@ model_classes = {
     "cls": AdaptiveRidgeLogisticRegression,
 }
 
+
 def get_dataloaders(data_name, data_path, batch_size):
     if data_name == "synthetic":
         train_dataset = SyntheticDataset(data_path, split="train")
@@ -45,7 +46,9 @@ def main(args):
     np.random.seed(42)
 
     # get dataset and dataloader
-    train_loader, val_loader, test_loader = get_dataloaders(args.data_name, args.data_path, args.batch_size)
+    train_loader, val_loader, test_loader = get_dataloaders(
+        args.data_name, args.data_path, args.batch_size
+    )
 
     if args.task == "reg":
         model = AdaptiveRidgeRegression(
@@ -115,7 +118,7 @@ def main(args):
         logger=logger,
         log_every_n_steps=1,
         callbacks=callbacks,
-        check_val_every_n_epoch=1
+        check_val_every_n_epoch=1,
     )
 
     try:
@@ -124,7 +127,9 @@ def main(args):
         print("==> Beta_0 at the end of training:", model.beta_0.cpu().detach().numpy())
 
         # load the best model
-        model = model_classes[args.task].load_from_checkpoint(trainer.checkpoint_callback.best_model_path)
+        model = model_classes[args.task].load_from_checkpoint(
+            trainer.checkpoint_callback.best_model_path
+        )
         print("==> Beta of the best model:", model.beta.cpu().detach().numpy())
         print("==> Beta_0 of the best model:", model.beta_0.cpu().detach().numpy())
 
@@ -142,17 +147,16 @@ def main(args):
 
         # get nonlinear effects
         if args.task == "reg":
-            model.to('cuda')
+            model.to("cuda")
             nn_effects = []
             for batch in test_loader:
                 X = batch["features"]
-                nn_out = model.compute_nonlinearity(X.to('cuda'))
+                nn_out = model.compute_nonlinearity(X.to("cuda"))
                 nn_out = nn_out.cpu().detach().numpy()
                 nn_effects.append(nn_out)
             nn_effects = np.concatenate(nn_effects, axis=0)
             np.save(f"./ckpts/nn_effects_{expr_name}.npy", nn_effects)
             print(f"==> Nonlinear effects saved at ./ckpts/nn_effects_{expr_name}.npy")
-
 
     except KeyboardInterrupt:
         print("\n==> Training interrupted. Saving latest checkpoint and computing predictions...")
@@ -175,8 +179,6 @@ def main(args):
 
         print("Exiting gracefully.")
 
-    
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -195,7 +197,7 @@ if __name__ == "__main__":
     parser.add_argument("--lasso_norm", type=float, default=1)
     parser.add_argument("--group_norm", type=float, default=1)
     parser.add_argument("--hidden_dim", type=int, default=None)
-    parser.add_argument('--dropout', type=float, default=0)
+    parser.add_argument("--dropout", type=float, default=0)
 
     parser.add_argument("--num_epochs", type=int, default=1000)
     parser.add_argument("--early_stop", action="store_true")

@@ -9,13 +9,13 @@ dataset_name = "boston"
 data = fetch_openml(name=dataset_name, as_frame=True)
 X, y = data.data, data.target
 df = pd.concat([X, y], axis=1)
-df.rename(columns={'MEDV': 'target'}, inplace=True)
+df.rename(columns={"MEDV": "target"}, inplace=True)
 
 for i in range(1, 10):
-    print(f'Processing dataset with random seed {i}...')
-    
-    if not os.path.exists(f'./data/boston_{i}'):
-        os.makedirs(f'./data/boston_{i}')
+    print(f"Processing dataset with random seed {i}...")
+
+    if not os.path.exists(f"./data/boston_{i}"):
+        os.makedirs(f"./data/boston_{i}")
 
     rand_seed = i
 
@@ -24,25 +24,25 @@ for i in range(1, 10):
 
     # normalize the data frame
     scalar = StandardScaler()
-    X_train = scalar.fit_transform(train_df.drop(columns=['target']))
-    X_val = scalar.transform(val_df.drop(columns=['target']))
-    X_test = scalar.transform(test_df.drop(columns=['target']))
+    X_train = scalar.fit_transform(train_df.drop(columns=["target"]))
+    X_val = scalar.transform(val_df.drop(columns=["target"]))
+    X_test = scalar.transform(test_df.drop(columns=["target"]))
 
-    y_mean, y_std = train_df['target'].mean(), train_df['target'].std()
-    y_train = (train_df['target'] - y_mean) / y_std
-    y_val = (val_df['target'] - y_mean) / y_std
-    y_test = (test_df['target'] - y_mean) / y_std
+    y_mean, y_std = train_df["target"].mean(), train_df["target"].std()
+    y_train = (train_df["target"] - y_mean) / y_std
+    y_val = (val_df["target"] - y_mean) / y_std
+    y_test = (test_df["target"] - y_mean) / y_std
 
     # remerge into a single dataframe
-    columns = train_df.drop(columns=['target']).columns
+    columns = train_df.drop(columns=["target"]).columns
     train_df = pd.DataFrame(X_train, columns=columns, index=train_df.index)
-    train_df['target'] = y_train
+    train_df["target"] = y_train
     val_df = pd.DataFrame(X_val, columns=columns, index=val_df.index)
-    val_df['target'] = y_val
+    val_df["target"] = y_val
     test_df = pd.DataFrame(X_test, columns=columns, index=test_df.index)
-    test_df['target'] = y_test
+    test_df["target"] = y_test
 
     # save the dataframes to csv
-    train_df.to_csv(f'./data/boston_{rand_seed}/train.csv', index=False)
-    val_df.to_csv(f'./data/boston_{rand_seed}/val.csv', index=False)
-    test_df.to_csv(f'./data/boston_{rand_seed}/test.csv', index=False)
+    train_df.to_csv(f"./data/boston_{rand_seed}/train.csv", index=False)
+    val_df.to_csv(f"./data/boston_{rand_seed}/val.csv", index=False)
+    test_df.to_csv(f"./data/boston_{rand_seed}/test.csv", index=False)

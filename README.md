@@ -49,21 +49,23 @@ NIMO_ICLR/
 ├── train_ar.sh / train_simple_nn.sh          # Quick-start training scripts
 ├── train_ar_sweep_*.sh          # Hyperparameter sweep scripts per dataset
 ├── train_pmlb_nimo.sh / train_pmlb_nn.sh     # PMLB benchmark scripts
-└── environment.yml
+├── pyproject.toml / uv.lock     # Dependencies (managed with uv)
 ```
 
 ---
 
 ## Setup
 
-Create and activate the conda environment:
+Install [uv](https://docs.astral.sh/uv/), then create the environment:
 
 ```shell
-conda env create -f environment.yml
-conda activate nimo
+uv sync                    # training scripts
+uv sync --extra notebooks  # also install notebook dependencies (shap, pmlb, tabpfn, ...)
 ```
 
-**Requirements:** Python 3.9, PyTorch (CUDA 12.8), PyTorch Lightning, lassonet, pandas, seaborn, tensorboardX.
+Run scripts with `uv run`, e.g. `uv run python train_ar.py --help` or `uv run bash train_ar.sh`, or activate the environment with `source .venv/bin/activate`.
+
+**Requirements:** Python 3.14, PyTorch (CUDA 13.0), PyTorch Lightning, lassonet, pandas, scikit-learn, seaborn, tensorboardX.
 
 ---
 
